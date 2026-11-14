@@ -343,3 +343,83 @@ table.t .line-link::before { width: 24px; }
 .ph.photo { background-size: cover; background-position: center; }
 .ph.photo::after { content: "仮：Instagramの投稿より"; font-size: 11px; letter-spacing: 0.04em; color: #FAF7F2; background: rgba(43, 37, 34, 0.55); padding: 2px var(--s-2); margin: var(--s-2); }
 .ig-grid img, .f-ig .grid img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--c-surface); }
+
+/* ---------- 2026-11-14 構成の組み直し（docs/INFORMATION_ARCHITECTURE.md）で足した部品 ---------- */
+/* TOP の最初の画面の下：料金の一行と相談ボタン。右は縦書きの白枠がかかるぶん空け、白枠の下端まで高さを取る */
+.mv-cta { width: calc(100% - var(--copy-w)); min-height: 320px; padding: var(--s-5) var(--s-6) 0; }
+.mv-cta .price { font-family: var(--f-head); font-size: 1.375rem; letter-spacing: 0.06em; margin-bottom: var(--s-1); }
+.mv-cta .price-note { font-size: var(--t-note); color: var(--c-ink-muted); }
+.mv-cta .lead { max-width: 560px; }
+.mv-cta .btns { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-5); margin-top: var(--s-4); }
+
+.tint { background: var(--c-surface); }
+.narrow { max-width: 720px; margin: 0 auto; }
+.sub-ttl { font-size: 1.25rem; margin: var(--s-5) 0 var(--s-2); }
+.center-text .btns, .narrow .btns { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-3); margin-top: var(--s-4); }
+
+/* 数字3つ（広さ・定員・駐車台数） */
+.facts { list-style: none; margin: var(--s-4) auto 0; padding: 0; max-width: 1120px; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); }
+.facts li { background: var(--c-paper); border: 1px solid var(--c-line); padding: var(--s-4) var(--s-3); text-align: center; }
+.facts b { display: block; font-family: var(--f-head); font-weight: 500; font-size: 1.375rem; }
+.facts span { font-size: var(--t-note); color: var(--c-ink-muted); }
+
+/* 写真の並び */
+.gallery { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); }
+.gallery.four { grid-template-columns: repeat(4, 1fr); }
+.gallery .ph { aspect-ratio: 4 / 3; }
+
+/* 利用までの流れ（TOP は横並び、ご利用案内は縦並び） */
+.flow { list-style: none; counter-reset: flow; margin: 0 auto; padding: 0; max-width: 1120px; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--s-3); }
+.flow li { counter-increment: flow; border-top: 1px solid var(--c-ink); padding-top: var(--s-3); }
+.flow li::before { content: counter(flow, decimal-leading-zero); display: block; font-family: var(--f-label); font-size: 1.5rem; line-height: 1.2; color: var(--c-accent); margin-bottom: var(--s-2); }
+.flow b { display: block; font-family: var(--f-head); font-weight: 500; font-size: 1.0625rem; margin-bottom: var(--s-1); }
+.flow p { margin: 0; font-size: var(--t-note); color: var(--c-ink-muted); }
+.flow.stack { grid-template-columns: 1fr; max-width: 900px; gap: 0; }
+.flow.stack li { display: grid; grid-template-columns: 3em 12em 1fr; gap: var(--s-3); align-items: baseline; padding: var(--s-3) 0; border-top-color: var(--c-line); }
+.flow.stack li::before { margin: 0; }
+.flow.stack b { margin: 0; }
+
+/* 利用シーン：用途ごとの中身 */
+.scene { max-width: 1120px; margin: 0 auto; }
+.scene dl { margin: 0 0 var(--s-4); }
+.scene dt { font-weight: 500; font-size: var(--t-note); color: var(--c-ink-muted); margin-top: var(--s-3); }
+.scene dd { margin: var(--s-1) 0 0; }
+
+/* Instagram の新しい投稿（本番はサーバー側で取り込み、取れない日は前回の投稿を出す） */
+.ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); max-width: 900px; margin: 0 auto; }
+.ig-grid a { text-decoration: none; display: block; }
+.ig-grid p { font-size: var(--t-note); margin: var(--s-2) 0 0; }
+.ig-grid time { display: block; color: var(--c-ink-muted); font-size: 12px; }
+
+/* フッターの上の誘い */
+.f-cta-lead { grid-column: 1 / -1; text-align: center; font-family: var(--f-head); font-size: 1.5rem; letter-spacing: 0.08em; margin: 0; }
+
+/* スマホの画面下に固定する2つのボタン（ヒーローを過ぎてから出す。利用の相談のページでは出さない） */
+.sp-bar { display: none; }
+
+@media (max-width: 1023px) {
+  .flow { grid-template-columns: 1fr 1fr; gap: var(--s-4) var(--s-3); }
+  .gallery.four { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 767px) {
+  /* スマホでは縦書きの白枠が写真の下の段に入る。高さを固定すると白枠が次の段にはみ出すので、段の高さで決める */
+  .mv { height: auto; min-height: 0; grid-template-rows: clamp(260px, 40vh, 380px) auto; }
+  .mv-cta { width: auto; min-height: 0; padding: var(--s-5) var(--s-3) 0; }
+  .facts { grid-template-columns: 1fr; }
+  .gallery, .gallery.four { grid-template-columns: repeat(2, 1fr); gap: var(--s-2); }
+  .flow { grid-template-columns: 1fr; gap: var(--s-3); }
+  .flow.stack li { grid-template-columns: 2.5em 1fr; }
+  .flow.stack li p { grid-column: 2; }
+  .ig-grid { grid-template-columns: repeat(2, 1fr); }
+  .f-cta-lead { font-size: 1.25rem; }
+  .sp-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2);
+    padding: var(--s-2) var(--s-3) calc(var(--s-2) + env(safe-area-inset-bottom));
+    background: rgba(250, 247, 242, 0.96); border-top: 1px solid var(--c-line);
+    transform: translateY(110%); transition: transform 0.25s ease;
+  }
+  body.sp-bar-on .sp-bar { transform: none; }
+  .sp-bar .btn { min-height: 48px; padding: 0 var(--s-2); font-size: 0.9375rem; }
+  body.has-sp-bar { padding-bottom: 72px; }
+}
+@media (prefers-reduced-motion: reduce) { .sp-bar { transition: none; } }

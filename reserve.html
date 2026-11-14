@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=8">
+<link rel="stylesheet" href="assets/site.css?v=11">
 <style>
 .choose { max-width: 1040px; margin: 0 auto; padding: 0 var(--s-5); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); }
 .choose a { display: block; background: var(--c-paper); padding: var(--s-5) var(--s-4); text-decoration: none; border: 1px solid var(--c-line); }
@@ -82,13 +82,15 @@ textarea { min-height: 120px; }
     <a href="#rental">レンタルスペース</a><a href="#lesson">ヨガ・ピラティス</a><a href="#event">イベント</a><a href="#status">お申込み状況</a>
   </nav>
 
+  <p class="callout"><b>この画面は Phase 3 の見本です。</b>要件定義書（2026-11-14）では、オンライン予約は Phase 3 です。最初の公開では予約の画面を作らず、今の予約システム（/yoyaku/）につなぎます。予約の仕組みを新しくすると決めた場合に、この画面を使います。ナビには出していません。</p>
+
   <section class="page-sec" id="choose" style="padding-top:0">
     <div class="choose">
       <a href="#rental"><span class="chip rental">承認制</span><h3>古民家を借りる</h3><p class="note" style="margin:0">ご希望の日時を3つまで選んで送ってください。内容を確認して、24時間以内にご連絡します。<span class="todo">※返事の期限を確認中</span></p></a>
       <a href="#lesson"><span class="chip lesson">その場で確定</span><h3>ヨガ・ピラティスを予約する</h3><p class="note" style="margin:0">時間割から枠を選ぶと、その場で予約が確定します。初回の体験もこちらから。</p></a>
       <a href="#event"><span class="chip event">その場で確定</span><h3>イベントを予約する</h3><p class="note" style="margin:0">開催予定から回を選んでください。1回のお申込みで5名まで。</p></a>
     </div>
-    <p class="sublinks"><a href="#status">お申込み状況の確認・キャンセル</a><a href="about.html#visit">借りる前に見学したい方</a></p>
+    <p class="sublinks"><a href="#status">お申込み状況の確認・キャンセル</a><a href="contact.html?type=visit">借りる前に見学したい方</a></p>
   </section>
 
   <!-- レンタル -->
@@ -225,7 +227,7 @@ textarea { min-height: 120px; }
 </main>
 
 <div data-include="footer"></div>
-<script src="assets/site.js?v=5"></script>
+<script src="assets/site.js?v=6"></script>
 <script src="assets/reserve.js?v=3"></script>
 </body>
 </html>

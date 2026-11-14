@@ -1,14 +1,16 @@
 // 結び家SUI モック 共通部品（メニュー、フッター）
 // 各ページの <div data-include="header"></div> と <div data-include="footer"></div> に差し込む。
 
+// 2026-11-14 に docs/INFORMATION_ARCHITECTURE.md の構成へ組み直した。
+// ピラティスは「新サイトでも載せる」場合の形（CLIENT_QUESTIONS A10）。読みものは記事が3本そろうまで出さない。
 const NAV = [
   ["index.html", "ホーム"],
-  ["about.html", "結び家SUIとは"],
-  ["yoga.html", "ヨガについて"],
-  ["pilates.html", "ピラティスについて"],
-  ["news.html", "お知らせ"],
-  ["reserve.html", "ご予約"],
-  ["contact.html", "お問い合わせ"],
+  ["space.html", "スペース"],
+  ["scenes.html", "利用シーン"],
+  ["price.html", "料金"],
+  ["guide.html", "ご利用案内"],
+  ["pilates.html", "ピラティス"],
+  ["contact.html", "利用の相談"],
 ];
 const IG_URL = "https://www.instagram.com/sui_musubiya/";
 // フッターの Instagram カードに出す投稿（いまは 2026-11-14 に見た新しい6件。本番は自動で取り込む）
@@ -18,14 +20,8 @@ const LINE_URL = "https://lin.ee/OCzLIhO";
 const ICON_IG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg>';
 const ICON_LINE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 4C7 4 3 7.2 3 11.2c0 3.5 3.1 6.4 7.3 7l-.6 2.6 3.4-2.5c4.8-.4 7.9-3.4 7.9-7.1C21 7.2 17 4 12 4Z"/></svg>';
 
-// ヘッダーに並べるページ（ホームはロゴ、ご予約はボタンにするので外す）
-const HEADER_NAV = [
-  ["about.html", "結び家SUIとは"],
-  ["yoga.html", "ヨガ"],
-  ["pilates.html", "ピラティス"],
-  ["news.html", "お知らせ"],
-  ["contact.html", "お問い合わせ"],
-];
+// ヘッダーに並べるページ（ホームはロゴ、利用の相談はボタンにするので外す）
+const HEADER_NAV = NAV.slice(1, -1);
 
 function header() {
   const items = NAV.map(([href, label]) => `<li><a href="${href}">${label}</a></li>`).join("");
@@ -35,7 +31,7 @@ function header() {
   <header class="site-header">
     <a class="sh-logo" href="index.html"><small>古民家レンタルスペース</small>結び家SUI</a>
     <nav class="sh-nav" aria-label="主なページ">${links}</nav>
-    <a class="btn primary sh-reserve" href="reserve.html">ご予約</a>
+    <a class="btn primary sh-reserve" href="contact.html">利用の相談</a>
   </header>
   <button class="menu-btn" type="button" aria-label="メニューを開く" aria-expanded="false"><span></span></button>
   <nav class="nav-overlay" aria-label="サイト内のページ">
@@ -54,21 +50,21 @@ function footer() {
     <div class="f-cta">
       <div class="ph darker ph-bg photo" style="background-image:linear-gradient(rgba(43,37,34,.6),rgba(43,37,34,.6)),url(assets/img/ceiling-fan.jpg)" data-label="写真：外観（撮影予定）"></div>
       <div class="f-cta-inner">
+        <p class="f-cta-lead">あなたのやってみたいを、ここで実現しませんか？</p>
         <section>
-          <h2>お問い合わせ</h2>
-          <p class="small" style="margin:0">公式LINE</p>
-          <p class="big">@661nckdf</p>
-          <p class="small">こんな使い方はできる？というご相談も、お気軽にどうぞ。</p>
+          <h2>利用の相談</h2>
+          <p class="small">こんな使い方はできる？というご相談だけでも、お気軽にどうぞ。借りる前の見学もこちらから。</p>
           <div class="btns">
-            <a class="btn white" href="contact.html">フォームからお問い合わせ</a>
+            <a class="btn white" href="contact.html">利用について相談する</a>
+            <a class="btn white" href="contact.html?type=visit">見学を申し込む</a>
           </div>
         </section>
         <section>
-          <h2>ネットからのお申し込み</h2>
+          <h2>公式LINE</h2>
+          <p class="big">@661nckdf</p>
+          <p class="small">LINEからもご相談いただけます。</p>
           <div class="btns">
-            <a class="btn white" href="reserve.html#rental">レンタルスペースのお申し込み</a>
-            <a class="btn white" href="reserve.html#lesson">ヨガ・ピラティスのご予約</a>
-            <a class="btn white" href="reserve.html#status">お申込み状況の確認</a>
+            <a class="btn white" href="${LINE_URL}" target="_blank" rel="noopener">友だち追加する</a>
           </div>
         </section>
       </div>
@@ -77,7 +73,7 @@ function footer() {
       <a class="page-top" href="#top" aria-label="ページの先頭へ">︿</a>
       <div>
         <p class="f-logo"><small>古民家レンタルスペース</small>結び家SUI</p>
-        <p class="f-address">静岡県富士宮市（富士宮駅南口から徒歩圏・無料駐車場あり）<br>詳しい住所は、ご予約が確定した方にお知らせしています。<br>suimusubiya2026@gmail.com</p>
+        <p class="f-address">静岡県富士宮市（富士宮駅南口から徒歩圏内・無料駐車場あり）<br>詳しい住所は、お問い合わせいただいた方に個別にお知らせしています。<br>運営：○○ <span class="todo">※要確認</span><br>suimusubiya2026@gmail.com</p>
         <ul class="f-links">
           <li><a href="#">利用規約</a></li>
           <li><a href="#">プライバシーポリシー</a></li>
@@ -109,6 +105,20 @@ function footer() {
 
 document.querySelectorAll('[data-include="header"]').forEach((el) => (el.outerHTML = header()));
 document.querySelectorAll('[data-include="footer"]').forEach((el) => (el.outerHTML = footer()));
+
+// スマホの画面下に「利用の相談」と「LINE」を固定する。最初の画面を過ぎてから出し、<body data-no-bar> のページ（利用の相談、送信完了）では出さない。
+if (!document.body.hasAttribute("data-no-bar")) {
+  document.body.insertAdjacentHTML("beforeend", `
+  <div class="sp-bar" aria-label="相談の入口">
+    <a class="btn primary" href="contact.html">利用の相談</a>
+    <a class="btn" href="${LINE_URL}" target="_blank" rel="noopener">LINEで相談</a>
+  </div>`);
+  document.body.classList.add("has-sp-bar");
+  const SHOW_PX = 480;
+  const toggleBar = () => document.body.classList.toggle("sp-bar-on", window.scrollY > SHOW_PX);
+  window.addEventListener("scroll", toggleBar, { passive: true });
+  toggleBar();
+}
 
 const btn = document.querySelector(".menu-btn");
 if (btn) {
