@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>お問い合わせ｜結び家SUI（モック）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=8">
+<style>
+.ways { max-width: 900px; margin: 0 auto var(--s-6); padding: 0 var(--s-5); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); }
+.ways a { background: var(--c-paper); border: 1px solid var(--c-line); padding: var(--s-4); text-decoration: none; display: block; }
+.ways a:hover { border-color: var(--c-ink); }
+.ways b { display: block; font-family: var(--f-head); font-weight: 500; font-size: 1.125rem; margin-bottom: var(--s-1); }
+.form { max-width: 680px; margin: 0 auto; padding: 0 var(--s-5); }
+.form .row { margin-bottom: var(--s-4); }
+label.f { display: block; font-size: var(--t-note); font-weight: 500; margin-bottom: var(--s-1); }
+.req { font-size: 11px; color: var(--c-danger); border: 1px solid var(--c-danger); padding: 0 4px; margin-left: var(--s-2); }
+input[type=text], input[type=tel], input[type=email], select, textarea { width: 100%; font: inherit; font-size: 1rem; padding: 10px 12px; border: 1px solid var(--c-line); border-radius: 2px; background: var(--c-paper); color: var(--c-ink); }
+textarea { min-height: 160px; }
+.hidden { display: none; }
+.faq { max-width: 880px; margin: 0 auto; padding: 0 var(--s-5); }
+@media (max-width: 767px) { .ways { grid-template-columns: 1fr; padding: 0 var(--s-3); } .form, .faq { padding: 0 var(--s-3); } }
+</style>
+</head>
+<body id="top">
+<div data-include="header"></div>
+
+<main>
+  <div class="pv">
+    <a class="pv-logo" href="index.html"><span class="sub">古民家レンタルスペース</span><span class="name">結び家<span class="tcy">SUI</span></span></a>
+    <div class="ph dark pv-photo photo" style="background-image:url(assets/img/beams.jpg)" data-label="写真：縁側（撮影予定）"></div>
+    <div class="pv-ttl"><span class="label-en">Contact</span><h1>お問い合わせ</h1></div>
+    <p class="pv-tagline">ご相談だけでも、お気軽にどうぞ</p>
+  </div>
+  <ul class="crumbs"><li><a href="index.html">ホーム</a></li><li>お問い合わせ</li></ul>
+  <nav class="inner-links" aria-label="このページの中">
+    <a href="#contact">お問い合わせ</a><a href="#faq">よくあるご質問</a>
+  </nav>
+
+  <section class="page-sec" id="contact">
+    <h2 class="page-ttl">お問い合わせ</h2>
+    <div class="ways">
+      <a href="https://lin.ee/OCzLIhO" target="_blank" rel="noopener"><b>公式LINE</b><span class="note">@661nckdf。いちばん早くお返事できます</span></a>
+      <a href="https://www.instagram.com/sui_musubiya/" target="_blank" rel="noopener"><b>InstagramのDM</b><span class="note">@sui_musubiya</span></a>
+      <a href="mailto:suimusubiya2026@gmail.com"><b>メール</b><span class="note">suimusubiya2026@gmail.com</span></a>
+    </div>
+
+    <form class="form" id="c-form" onsubmit="return false">
+      <p>こんな使い方はできる？というご相談も、お気軽にどうぞ。ご予約はご予約のページからお申し込みください。</p>
+      <div class="row"><label class="f" for="c-type">お問い合わせの種類<span class="req">必須</span></label>
+        <select id="c-type"><option value="">選んでください</option><option>レンタルスペースについて</option><option>ヨガ・ピラティスについて</option><option>イベントについて</option><option>見学したい</option><option>その他</option></select></div>
+      <div class="row"><label class="f" for="c-name">お名前<span class="req">必須</span></label><input type="text" id="c-name" autocomplete="name"></div>
+      <div class="row"><label class="f" for="c-mail">メールアドレス<span class="req">必須</span></label><input type="email" id="c-mail" autocomplete="email"></div>
+      <div class="row"><label class="f" for="c-tel">電話番号（任意）</label><input type="tel" id="c-tel" autocomplete="tel"></div>
+      <div class="row"><label class="f" for="c-body">内容<span class="req">必須</span></label><textarea id="c-body"></textarea></div>
+      <div class="row"><label><input type="checkbox" id="c-agree"> <a href="#">プライバシーポリシー</a>に同意します</label></div>
+      <p class="todo hidden" id="c-err">種類、お名前、メールアドレス、内容を入れ、プライバシーポリシーに同意してください。</p>
+      <p style="text-align:center"><button class="btn primary" type="submit" id="c-send">送信する</button></p>
+      <p class="hidden" id="c-done" style="text-align:center">送信しました（モック）。内容を確認して、メールでお返事します。</p>
+    </form>
+  </section>
+
+  <section class="page-sec" id="faq">
+    <h2 class="page-ttl">よくあるご質問</h2>
+    <div class="faq">
+      <details class="qa-item"><summary>何人まで使えますか</summary><div class="a"><p>定員は ○名です。教室の形なら ○名、ピラティスなら ○名が目安です。<span class="todo">※要確認</span></p></div></details>
+      <details class="qa-item"><summary>飲み物や食べ物を持ち込めますか</summary><div class="a"><p>お申込みのときに、飲食の有無をお知らせください。<span class="todo">※持ち込みの可否とキッチンの有無を確認中</span></p></div></details>
+      <details class="qa-item"><summary>子ども連れでも使えますか</summary><div class="a"><p>お申込みのときに、お子さまの参加をお知らせください。<span class="todo">※可否と注意点を確認中</span></p></div></details>
+      <details class="qa-item"><summary>物販はできますか</summary><div class="a"><p>お申込みのときに「販売」にチェックを入れてください。内容を確認してお返事します。</p></div></details>
+      <details class="qa-item"><summary>駐車場はありますか</summary><div class="a"><p>無料の駐車場があります（○台 <span class="todo">※要確認</span>）。</p></div></details>
+      <details class="qa-item"><summary>住所を教えてください</summary><div class="a"><p>富士宮駅南口から歩いて来られる場所です。詳しい住所は、ご予約が確定した方にお知らせしています。</p></div></details>
+      <details class="qa-item"><summary>机や椅子はありますか</summary><div class="a"><p>机 ○台、椅子 ○脚があります。<span class="todo">※要確認</span></p></div></details>
+      <details class="qa-item"><summary>キャンセル料はかかりますか</summary><div class="a"><p>レンタルは、ご利用日の7日前から料金の全額をいただきます。ヨガ・ピラティスとイベントは ○ <span class="todo">※要確認</span></p></div></details>
+      <details class="qa-item"><summary>支払い方法は</summary><div class="a"><p>レンタルは銀行振込です。ヨガ・ピラティスとイベントは ○ <span class="todo">※要確認</span></p></div></details>
+      <details class="qa-item"><summary>初めてのピラティスでも大丈夫ですか</summary><div class="a"><p>体験レッスンで体の状態を伺ってから進めます。<span class="todo">※講師の方針に合わせる</span></p></div></details>
+      <details class="qa-item"><summary>借りる前に見学できますか</summary><div class="a"><p>公式LINEでご相談ください。<span class="todo">※見学の受け方を確認中</span></p></div></details>
+      <details class="qa-item"><summary>申し込んでから、いつ返事が来ますか</summary><div class="a"><p>24時間以内に、メールかLINEでご連絡します。<span class="todo">※要確認</span></p></div></details>
+      <details class="qa-item"><summary>ゴミはどうすればいいですか</summary><div class="a"><p>○ <span class="todo">※持ち帰りか、分別して置いていくかを確認中</span></p></div></details>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<script src="assets/site.js?v=5"></script>
+<script>
+document.getElementById("c-send").addEventListener("click", () => {
+  const ok = ["c-type", "c-name", "c-mail", "c-body"].every((id) => document.getElementById(id).value.trim()) && document.getElementById("c-agree").checked;
+  document.getElementById("c-err").classList.toggle("hidden", ok);
+  document.getElementById("c-done").classList.toggle("hidden", !ok);
+  if (ok) document.getElementById("c-send").disabled = true;
+});
+</script>
+</body>
+</html>

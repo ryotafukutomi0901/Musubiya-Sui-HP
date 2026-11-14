@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ご予約｜結び家SUI（モック）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=8">
+<style>
+.choose { max-width: 1040px; margin: 0 auto; padding: 0 var(--s-5); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); }
+.choose a { display: block; background: var(--c-paper); padding: var(--s-5) var(--s-4); text-decoration: none; border: 1px solid var(--c-line); }
+.choose a:hover { border-color: var(--c-ink); }
+.choose h3 { font-size: 1.25rem; margin-bottom: var(--s-2); }
+.chip { display: inline-block; font-size: 12px; font-weight: 500; border: 1px solid currentColor; padding: 0 var(--s-2); line-height: 1.8; }
+.chip.rental { color: var(--c-accent); } .chip.lesson { color: var(--c-moss); } .chip.event { color: var(--c-ai); }
+.sublinks { display: flex; justify-content: center; gap: var(--s-5); margin-top: var(--s-4); font-size: 12px; letter-spacing: 0.1em; }
+.box-w { max-width: 900px; margin: 0 auto; padding: 0 var(--s-5); }
+.stepper { list-style: none; display: flex; gap: var(--s-2); padding: 0; margin: 0 0 var(--s-5); font-size: var(--t-note); color: var(--c-ink-muted); flex-wrap: wrap; }
+.stepper li { flex: 1; border-top: 2px solid var(--c-line); padding-top: var(--s-2); min-width: 90px; }
+.stepper li.on { color: var(--c-ink); border-color: var(--c-ink); font-weight: 500; }
+.avail { width: 100%; border-collapse: collapse; font-size: var(--t-note); margin-bottom: var(--s-3); }
+.avail th, .avail td { border: 1px solid var(--c-line); padding: var(--s-2); text-align: center; }
+.avail td.full { background: repeating-linear-gradient(135deg, var(--c-surface), var(--c-surface) 4px, var(--c-line) 4px, var(--c-line) 5px); color: var(--c-ink-muted); }
+.avail-wrap { overflow-x: auto; }
+.choice { background: var(--c-paper); border: 1px solid var(--c-line); padding: var(--s-4); margin-bottom: var(--s-3); display: grid; grid-template-columns: 6em 1fr 1fr 1fr; gap: var(--s-3); align-items: end; }
+.choice .ttl { font-weight: 500; align-self: center; }
+.choice .total { grid-column: 2 / -1; font-size: var(--t-note); color: var(--c-ink-muted); }
+.choice .total b { color: var(--c-ink); font-size: var(--t-body); }
+label.f { display: block; font-size: var(--t-note); font-weight: 500; margin-bottom: var(--s-1); }
+.req { font-size: 11px; color: var(--c-danger); border: 1px solid var(--c-danger); padding: 0 4px; margin-left: var(--s-2); font-weight: 500; }
+input[type=text], input[type=tel], input[type=email], input[type=number], select, textarea {
+  width: 100%; font: inherit; font-size: 1rem; padding: 10px 12px; border: 1px solid var(--c-line); border-radius: 2px; background: var(--c-paper); color: var(--c-ink);
+}
+textarea { min-height: 120px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); margin: var(--s-4) 0; }
+.form-grid .full { grid-column: 1 / -1; }
+.checks { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); font-size: 0.9375rem; }
+.panel { background: var(--c-paper); border: 1px solid var(--c-line); padding: var(--s-5); }
+.panel h3 { font-size: 1.25rem; margin-bottom: var(--s-3); }
+.hidden { display: none !important; }
+.err { color: var(--c-danger); font-size: var(--t-note); margin-top: var(--s-2); }
+.actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-4); }
+.receipt { font-family: var(--f-label); font-size: 2rem; letter-spacing: 0.1em; }
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--c-line); margin-bottom: var(--s-4); }
+.tabs button { font: inherit; background: none; border: 0; padding: var(--s-2) var(--s-4); cursor: pointer; color: var(--c-ink-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs button.on { color: var(--c-ink); border-color: var(--c-moss); font-weight: 500; }
+.slots { list-style: none; padding: 0; margin: 0; }
+.slots li { display: grid; grid-template-columns: 1fr auto auto; gap: var(--s-4); align-items: center; padding: var(--s-3) 0; border-bottom: 1px solid var(--c-line); }
+.slots .when { font-weight: 500; }
+.slots .left { font-size: var(--t-note); color: var(--c-ink-muted); }
+.events { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+.events .card { background: var(--c-paper); border: 1px solid var(--c-line); }
+.events .card .ph { aspect-ratio: 16 / 9; }
+.events .card .in { padding: var(--s-4); }
+.events .card h3 { font-size: 1.125rem; margin: var(--s-2) 0; }
+@media (max-width: 767px) {
+  .choose { grid-template-columns: 1fr; padding: 0 var(--s-3); }
+  .box-w { padding: 0 var(--s-3); }
+  .choice { grid-template-columns: 1fr 1fr; }
+  .choice .ttl, .choice .total { grid-column: 1 / -1; }
+  .form-grid { grid-template-columns: 1fr; }
+  .events { grid-template-columns: 1fr; }
+  .slots li { grid-template-columns: 1fr auto; }
+  .slots .left { grid-column: 1; }
+}
+</style>
+</head>
+<body id="top">
+<div data-include="header"></div>
+
+<main>
+  <div class="pv">
+    <a class="pv-logo" href="index.html"><span class="sub">古民家レンタルスペース</span><span class="name">結び家<span class="tcy">SUI</span></span></a>
+    <div class="ph dark pv-photo photo" style="background-image:url(assets/img/genkan.jpg)" data-label="写真：玄関と土間（撮影予定）"></div>
+    <div class="pv-ttl"><span class="label-en">Reservation</span><h1>ご予約</h1></div>
+    <p class="pv-tagline">心地よい時間を、ここから。</p>
+  </div>
+  <ul class="crumbs"><li><a href="index.html">ホーム</a></li><li>ご予約</li></ul>
+  <nav class="inner-links" aria-label="このページの中">
+    <a href="#rental">レンタルスペース</a><a href="#lesson">ヨガ・ピラティス</a><a href="#event">イベント</a><a href="#status">お申込み状況</a>
+  </nav>
+
+  <section class="page-sec" id="choose" style="padding-top:0">
+    <div class="choose">
+      <a href="#rental"><span class="chip rental">承認制</span><h3>古民家を借りる</h3><p class="note" style="margin:0">ご希望の日時を3つまで選んで送ってください。内容を確認して、24時間以内にご連絡します。<span class="todo">※返事の期限を確認中</span></p></a>
+      <a href="#lesson"><span class="chip lesson">その場で確定</span><h3>ヨガ・ピラティスを予約する</h3><p class="note" style="margin:0">時間割から枠を選ぶと、その場で予約が確定します。初回の体験もこちらから。</p></a>
+      <a href="#event"><span class="chip event">その場で確定</span><h3>イベントを予約する</h3><p class="note" style="margin:0">開催予定から回を選んでください。1回のお申込みで5名まで。</p></a>
+    </div>
+    <p class="sublinks"><a href="#status">お申込み状況の確認・キャンセル</a><a href="about.html#visit">借りる前に見学したい方</a></p>
+  </section>
+
+  <!-- レンタル -->
+  <section class="page-sec" id="rental">
+    <h2 class="page-ttl">レンタルスペースのお申込み</h2>
+    <div class="box-w">
+      <ol class="stepper" id="r-steps">
+        <li class="on">1 お申込みの前に</li><li class="on">2 日時を選ぶ</li><li>3 入力</li><li>4 確認</li><li>5 完了</li>
+      </ol>
+
+      <div id="r-form">
+        <div class="panel" style="margin-bottom:24px">
+          <h3>お申込みの前に</h3>
+          <ul class="dots" style="margin:0">
+            <li>お申込みはご利用日の3日前までです</li>
+            <li>ご利用日の7日前からのキャンセルは、料金の全額をいただきます</li>
+            <li>ご予約が確定したら、口座振込でお支払いください（振込先は確定のご連絡でお知らせします）</li>
+          </ul>
+        </div>
+
+        <h3 style="font-size:1.125rem;margin-bottom:8px">空き状況（表示例）</h3>
+        <p class="note">○ 空いています　△ 一部埋まっています　× 埋まっています</p>
+        <div class="avail-wrap"><table class="avail" id="avail"></table></div>
+
+        <h3 style="font-size:1.125rem;margin:24px 0 8px">ご希望の日時</h3>
+        <p class="note">準備と片付けの時間も含めて選んでください。開始は30分刻み、ご利用は2〜12時間です。</p>
+        <div id="choices"></div>
+        <button class="btn" type="button" id="add-choice">希望を追加する（3つまで）</button>
+
+        <h3 style="font-size:1.125rem;margin:40px 0 0">お申込みの内容</h3>
+        <div class="form-grid">
+          <div><label class="f" for="r-name">お名前<span class="req">必須</span></label><input type="text" id="r-name" autocomplete="name"></div>
+          <div><label class="f" for="r-kana">ふりがな<span class="req">必須</span></label><input type="text" id="r-kana"></div>
+          <div><label class="f" for="r-tel">電話番号<span class="req">必須</span></label><input type="tel" id="r-tel" autocomplete="tel"></div>
+          <div><label class="f" for="r-mail">メールアドレス<span class="req">必須</span></label><input type="email" id="r-mail" autocomplete="email"></div>
+          <div><label class="f" for="r-purpose">ご利用の目的<span class="req">必須</span></label>
+            <select id="r-purpose"><option value="">選んでください</option><option>ワークショップ</option><option>教室・レッスン</option><option>マルシェ</option><option>交流会</option><option>撮影</option><option>その他</option></select></div>
+          <div><label class="f" for="r-people">人数<span class="req">必須</span></label><input type="number" id="r-people" min="1" value="1"></div>
+          <div class="full"><span class="f">あてはまるもの</span>
+            <div class="checks"><label><input type="checkbox"> 飲食</label><label><input type="checkbox"> 撮影</label><label><input type="checkbox"> 音楽や大きな音</label><label><input type="checkbox"> 子どもの参加</label><label><input type="checkbox"> 販売</label></div></div>
+          <div class="full"><label class="f" for="r-desc">内容の説明</label><textarea id="r-desc" placeholder="どんな集まりか、準備するものなど"></textarea></div>
+          <div><label class="f" for="r-know">結び家SUIを知ったきっかけ</label>
+            <select id="r-know"><option value="">選んでください（任意）</option><option>Google検索</option><option>Googleマップ</option><option>Instagram</option><option>公式LINE</option><option>知人の紹介</option><option>レンタルスペースの掲載サイト</option><option>その他</option></select></div>
+          <div class="full checks"><label><input type="checkbox" id="r-line"> LINEで連絡を受け取る（任意）</label><label><input type="checkbox"> 催しのお知らせを受け取る（任意）</label></div>
+          <div class="full"><label><input type="checkbox" id="r-agree"> <a href="#">利用規約</a>と<a href="#">ご利用前にご確認いただきたいこと</a>に同意します</label></div>
+        </div>
+        <p class="err hidden" id="r-err"></p>
+        <div class="actions"><button class="btn primary" type="button" id="r-confirm">内容を確認する</button></div>
+      </div>
+
+      <div id="r-check" class="panel hidden">
+        <h3>内容の確認</h3>
+        <div id="r-summary"></div>
+        <div class="actions"><button class="btn" type="button" id="r-back">戻って直す</button><button class="btn primary" type="button" id="r-submit">申し込む</button></div>
+      </div>
+
+      <div id="r-done" class="panel hidden">
+        <h3>お申込みを受け付けました</h3>
+        <p>受付番号</p>
+        <p class="receipt" id="r-no"></p>
+        <p>この時点では、まだご予約は確定していません。内容を確認して、24時間以内にメールかLINEでご連絡します。<span class="todo">※返事の期限を確認中</span></p>
+        <p class="note">受付番号と電話番号で、お申込み状況の確認と取り消しができます。</p>
+        <div class="actions"><a class="btn" href="#status">お申込み状況を見る</a><a class="btn" href="https://lin.ee/OCzLIhO" target="_blank" rel="noopener">LINEの友だちに追加する</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ヨガ・ピラティス -->
+  <section class="page-sec" id="lesson">
+    <h2 class="page-ttl">ヨガ・ピラティスのご予約</h2>
+    <div class="box-w">
+      <div class="tabs" role="tablist"><button class="on" type="button" data-tab="pilates">ピラティス</button><button type="button" data-tab="yoga">ヨガ</button></div>
+      <div id="tab-pilates">
+        <p class="note">予約の締切はレッスン開始の3時間前です（表示例）。</p>
+        <ul class="slots" id="slots"></ul>
+      </div>
+      <div id="tab-yoga" class="hidden">
+        <p class="callout" style="margin:0"><b>準備中です。</b>ヨガのクラスの内容と日程が決まったら、ここに時間割が並びます。<span class="todo">※要確認</span></p>
+      </div>
+      <div id="l-form" class="panel hidden" style="margin-top:24px">
+        <h3 id="l-ttl">予約の内容</h3>
+        <div class="form-grid">
+          <div><label class="f" for="l-name">お名前<span class="req">必須</span></label><input type="text" id="l-name"></div>
+          <div><label class="f" for="l-kana">ふりがな<span class="req">必須</span></label><input type="text" id="l-kana"></div>
+          <div><label class="f" for="l-tel">電話番号<span class="req">必須</span></label><input type="tel" id="l-tel"></div>
+          <div><label class="f" for="l-mail">メールアドレス<span class="req">必須</span></label><input type="email" id="l-mail"></div>
+          <div class="full checks"><label><input type="checkbox" id="l-first"> 初めての参加です（体験）</label></div>
+          <div class="full"><label class="f" for="l-body">体のことで伝えておきたいこと（任意）</label><textarea id="l-body"></textarea></div>
+        </div>
+        <p class="note">料金とお支払い方法：<span id="l-price"></span>　キャンセル：○時間前まで無料 <span class="todo">※要確認</span></p>
+        <p class="err hidden" id="l-err"></p>
+        <div class="actions"><button class="btn primary" type="button" id="l-submit">予約する</button></div>
+      </div>
+      <div id="l-done" class="panel hidden" style="margin-top:24px">
+        <h3>ご予約が確定しました</h3>
+        <p id="l-done-txt"></p>
+        <p class="note">前日に、場所と持ち物をあらためてお送りします。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- イベント -->
+  <section class="page-sec" id="event">
+    <h2 class="page-ttl">イベントのご予約</h2>
+    <div class="box-w">
+      <p class="note">開催予定は予約のデータから表示します（いまは表示例）。</p>
+      <div class="events">
+        <div class="card"><div class="ph" data-label="写真：催しの様子"></div><div class="in"><span class="chip event">ワークショップ</span><h3>（表示例）季節のリースづくり</h3><p class="note">12月13日（土）13:00〜15:00　参加費 ○円　あと4名　締切は72時間前</p><button class="btn" type="button" data-event>この回を予約する</button></div></div>
+        <div class="card"><div class="ph" data-label="写真：催しの様子"></div><div class="in"><span class="chip event">交流会</span><h3>（表示例）古民家でお茶の時間</h3><p class="note">12月20日（土）10:30〜12:00　参加費 ○円　満席</p><button class="btn" type="button" disabled>満席です</button></div></div>
+      </div>
+      <p class="note hidden" id="e-done" style="margin-top:16px">（モック）この回の予約画面が開きます。人数（1回のお申込みで5名まで）を選んで、ピラティスと同じ形で入力します。</p>
+    </div>
+  </section>
+
+  <!-- お申込み状況 -->
+  <section class="page-sec" id="status">
+    <h2 class="page-ttl">お申込み状況の確認</h2>
+    <div class="box-w" style="max-width:640px">
+      <p>受付番号と、お申込みのときの電話番号を入れてください。</p>
+      <div class="form-grid" style="grid-template-columns:1fr">
+        <div><label class="f" for="s-no">受付番号<span class="req">必須</span></label><input type="text" id="s-no" placeholder="例：K7M2Q9XA"></div>
+        <div><label class="f" for="s-tel">電話番号<span class="req">必須</span></label><input type="tel" id="s-tel"></div>
+      </div>
+      <p class="err hidden" id="s-err">受付番号か電話番号が違うか、お申込みが見つかりませんでした。</p>
+      <div class="actions"><button class="btn primary" type="button" id="s-go">確認する</button></div>
+      <div id="s-result" class="panel hidden" style="margin-top:24px">
+        <p><span class="chip" style="color:var(--c-amber)">承認待ち</span></p>
+        <p>レンタルスペース　第1希望 12月6日（土）10:00〜13:00（3時間）3,000円</p>
+        <p class="note">ご利用日の7日前（11月29日）より前なので、キャンセル料はかかりません。</p>
+        <button class="btn" type="button" id="s-cancel">このお申込みを取り消す</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-include="footer"></div>
+<script src="assets/site.js?v=5"></script>
+<script src="assets/reserve.js?v=3"></script>
+</body>
+</html>
