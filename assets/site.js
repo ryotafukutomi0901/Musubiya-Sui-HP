@@ -3,6 +3,7 @@
 
 // 2026-11-14 に docs/INFORMATION_ARCHITECTURE.md の構成へ組み直した。
 // ピラティスは「新サイトでも載せる」場合の形（CLIENT_QUESTIONS A10）。読みものは記事が3本そろうまで出さない。
+// 2026-11-15 の CEO 指示で、ご予約（レンタルとピラティスをカレンダーで予約・確認・変更）をナビに入れた。
 const NAV = [
   ["index.html", "ホーム"],
   ["space.html", "スペース"],
@@ -10,6 +11,7 @@ const NAV = [
   ["price.html", "料金"],
   ["guide.html", "ご利用案内"],
   ["pilates.html", "ピラティス"],
+  ["reserve.html", "ご予約"],
   ["contact.html", "利用の相談"],
 ];
 const IG_URL = "https://www.instagram.com/sui_musubiya/";
@@ -48,7 +50,7 @@ function footer() {
   return `
   <footer>
     <div class="f-cta">
-      <div class="ph darker ph-bg photo" style="background-image:linear-gradient(rgba(43,37,34,.6),rgba(43,37,34,.6)),url(assets/img/ceiling-fan.jpg)" data-label="写真：外観（撮影予定）"></div>
+      <div class="ph darker ph-bg photo" style="background-image:linear-gradient(rgba(43,37,34,.6),rgba(43,37,34,.6)),url(assets/img/photo/ceiling-fan.jpg)" data-label="写真：外観（撮影予定）"></div>
       <div class="f-cta-inner">
         <p class="f-cta-lead">あなたのやってみたいを、ここで実現しませんか？</p>
         <section>

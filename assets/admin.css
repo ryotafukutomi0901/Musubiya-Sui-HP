@@ -110,3 +110,20 @@ input, select, textarea { font: inherit; font-size: 15px; padding: 8px 10px; bor
 .btn { white-space: nowrap; }
 table.t td:first-child { white-space: nowrap; }
 table.t .row { flex-wrap: nowrap; }
+
+/* 月のカレンダー（管理画面） */
+.mgrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border: 1px solid var(--c-line); background: var(--c-paper); font-size: 12px; min-width: 760px; }
+.mgrid .h { padding: 6px; text-align: center; background: var(--c-surface); border-bottom: 1px solid var(--c-line); font-weight: 500; }
+.mday { min-height: 112px; border-right: 1px solid var(--c-line); border-bottom: 1px solid var(--c-line); padding: 4px 6px; display: flex; flex-direction: column; gap: 2px; cursor: pointer; overflow: hidden; }
+.mday:nth-child(7n) { border-right: 0; }
+.mday:hover { background: var(--c-bg); }
+.mday.past { color: var(--c-ink-muted); background: var(--c-bg); }
+.mday.today .dn { background: var(--c-ink); color: #fff; padding: 0 6px; }
+.mday.off { background: repeating-linear-gradient(135deg, var(--c-surface), var(--c-surface) 4px, var(--c-line) 4px, var(--c-line) 5px); }
+.mday .dn { font-weight: 700; font-variant-numeric: tabular-nums; align-self: flex-start; }
+.mday .mi { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 3px solid var(--c-ink-muted); padding-left: 4px; line-height: 1.5; }
+.mday .mi.rental { border-color: var(--c-accent); } .mday .mi.lesson { border-color: var(--c-moss); } .mday .mi.event { border-color: var(--c-ai); }
+.mday .mi.pending { border-left-style: dashed; color: var(--c-ink-muted); }
+.mday .mi.more { border: 0; color: var(--c-ink-muted); }
+.mailpre { white-space: pre-wrap; font-family: var(--f-body); font-size: 13px; line-height: 1.8; margin: 8px 0 0; padding: 12px; background: var(--c-bg); border: 1px solid var(--c-line); }
+.cal .ev[data-slotinfo] { cursor: pointer; }

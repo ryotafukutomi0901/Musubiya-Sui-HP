@@ -342,6 +342,9 @@ table.t .line-link::before { width: 24px; }
 /* 仮に当てた写真（Instagramの投稿から切り出したもの。本番は撮影した写真に差し替える） */
 .ph.photo { background-size: cover; background-position: center; }
 .ph.photo::after { content: "仮：Instagramの投稿より"; font-size: 11px; letter-spacing: 0.04em; color: #FAF7F2; background: rgba(43, 37, 34, 0.55); padding: 2px var(--s-2); margin: var(--s-2); }
+/* 生成画像（assets/img/gen/）。実写と見分けがつくよう、左上に「イメージ」と出す */
+.ph.photo.gen { align-items: flex-start; justify-content: flex-start; }
+.ph.photo.gen::after { content: "イメージ（生成画像）"; }
 .ig-grid img, .f-ig .grid img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--c-surface); }
 
 /* ---------- 2026-11-14 構成の組み直し（docs/INFORMATION_ARCHITECTURE.md）で足した部品 ---------- */
