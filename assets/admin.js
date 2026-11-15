@@ -120,9 +120,13 @@ VIEWS.bookings = () => {
     </tbody></table></div>`;
 };
 
-let calMode = "week";
-let weekStart = 0;
-let monthStart = 0;
+// 月の表はその月の1日から、週の表は日曜から始める（今日から始めない）。mon は今月から何か月ずらしたか、sel は選んでいる日
+const sundayOf = (off) => off - S.dayOf(off).getDay();
+let calMode = "month";
+let weekStart = sundayOf(0);
+let mon = 0;
+let sel = 0;
+const monthOf = () => { const t = S.dayOf(0); const f = new Date(t.getFullYear(), t.getMonth() + mon, 1); return { y: f.getFullYear(), m: f.getMonth() }; };
 function calItems() {
   const items = S.busy().map((b) => ({ ...b }));
   D().req.filter((r) => r.status === "pending").forEach((r) => r.choices.forEach((c, i) => items.push({ day: c.day, s: toMin(c.start), e: toMin(c.start) + c.h * 60, kind: "rental", pending: true, label: `第${i + 1}希望 ${r.name} 様`, no: r.no })));
@@ -131,23 +135,27 @@ function calItems() {
 }
 VIEWS.calendar = () => {
   const items = calItems();
+  const { y, m } = monthOf();
   const head = `
     <h1>カレンダー</h1>
     <div class="row" style="margin-bottom:16px">
       <button class="btn ${calMode === "month" ? "primary" : ""}" data-calmode="month">月</button><button class="btn ${calMode === "week" ? "primary" : ""}" data-calmode="week">週</button>
       <span style="width:16px"></span>
       ${calMode === "week"
-        ? `<button class="btn" data-week="-7">前の週</button><button class="btn" data-week="0">今日から</button><button class="btn" data-week="7">次の週</button><span class="note" style="margin-left:8px">${md(weekStart)}〜${md(weekStart + 6)}</span>`
-        : `<button class="btn" data-month="-35">前へ</button><button class="btn" data-month="0">今日を含む週から</button><button class="btn" data-month="35">次へ</button>`}
+        ? `<button class="btn" data-week="-7">前の週</button><button class="btn" data-week="0">今週</button><button class="btn" data-week="7">次の週</button><b class="cal-ttl">${md(weekStart)}〜${md(weekStart + 6)}</b>`
+        : `<button class="btn" data-mon="-1">前の月</button><button class="btn" data-mon="0">今月</button><button class="btn" data-mon="1">次の月</button><b class="cal-ttl">${y}年${m + 1}月</b>`}
       <button class="btn" data-ics-all style="margin-left:auto">カレンダーアプリに書き出す（.ics）</button>
     </div>
-    <div class="legend"><span><span class="chip rental">レンタル</span></span><span><span class="chip lesson">レッスン</span></span><span><span class="chip event">イベント</span></span><span>点線＝承認待ち・変更の希望</span><span>斜線＝休業日</span></div>`;
+    <div class="legend"><span><span class="lg rental"></span>レンタル</span><span><span class="lg rental pending"></span>承認待ち・変更の希望</span><span><span class="lg lesson"></span>レッスン</span><span><span class="lg event"></span>イベント</span><span><span class="lg off"></span>休業日</span></div>`;
   const foot = `
     <div class="panel" style="margin-top:16px">
       <p style="margin:0 0 8px;font-weight:700">ふだん使っているカレンダーで見る</p>
       <p class="note" style="margin:0">本番では、予定をオーナー様の Google カレンダー（スマホのカレンダー）にも自動で出します。やり方は2つあり、どちらにするかは ${todo("※要相談")}。1つは、カレンダーに「購読用のURL」を1回登録しておく方法（見るだけ。反映に数時間かかることがある）。もう1つは、予約が入るたびに Google カレンダーへ予定を書き込む方法（すぐ反映。Google との連携の設定が要る）。モックでは、いまの予定を .ics ファイルに書き出して、カレンダーアプリに読み込めます。</p>
     </div>`;
-  if (calMode === "month") return head + monthGrid(items) + `<p class="note">日にちを押すと、その週の時間ごとの表が開きます。</p>` + foot;
+  const grid = calMode === "month" ? monthGrid(items) : weekGrid(items);
+  return head + `<div class="calwrap"><div class="calmain">${grid}<p class="note">日にちを押すと、その日の予定が${calMode === "month" ? "右" : "下"}に出ます。レンタルの予定を押すと、申込みの内容が開きます。</p></div>${dayPanel(items)}</div>` + foot;
+};
+function weekGrid(items) {
   const days = [...Array(7)].map((_, i) => weekStart + i);
   const px = (min) => ((Math.min(Math.max(min, 540), 1260) - 540) / 60) * 52;
   const col = (d) => {
@@ -158,33 +166,84 @@ VIEWS.calendar = () => {
     }).join("");
     return `<div class="col${closed ? " off" : ""}">${closed ? `<div class="ev" style="top:8px;height:auto;border-color:var(--c-ink-muted)">休業日<br>${esc(closed.reason)}</div>` : ""}${evs}</div>`;
   };
-  return head + `
+  return `
     <div class="tbl" style="border:0">
       <div class="cal">
-        <div class="h"></div>${days.map((d) => `<div class="h">${md(d)}</div>`).join("")}
+        <div class="h"></div>${days.map((d) => `<div class="h${d === 0 ? " today" : ""}${sel === d ? " sel" : ""}" data-day="${d}" role="button" tabindex="0">${md(d)}</div>`).join("")}
         <div class="times">${[...Array(13)].map((_, i) => `<span style="top:${i * 52}px">${9 + i}:00</span>`).join("")}</div>
         ${days.map(col).join("")}
       </div>
-    </div>
-    <p class="note">レンタルの枠を押すと申込みの内容が、レッスンの枠を押すと予約した方の一覧が開きます。</p>` + foot;
-};
+    </div>`;
+}
 function monthGrid(items) {
-  const startDow = S.dayOf(monthStart).getDay();
-  const first = monthStart - startDow;
-  const cells = [...Array(35)].map((_, i) => first + i).map((d) => {
+  const { y, m } = monthOf();
+  const first = S.offOf(y, m, 1);
+  const count = new Date(y, m + 1, 0).getDate();
+  const lead = S.dayOf(first).getDay();
+  const start = first - lead;
+  const weeks = Math.ceil((lead + count) / 7);
+  const cells = [...Array(weeks * 7)].map((_, i) => start + i).map((d) => {
+    const out = d < first || d >= first + count;
     const closed = D().closed.find((c) => c.day === d);
     const list = items.filter((b) => b.day === d && b.kind !== "closed").sort((a, b) => a.s - b.s);
     const dt = S.dayOf(d);
-    return `<div class="mday${d < 0 ? " past" : ""}${d === 0 ? " today" : ""}${closed ? " off" : ""}" data-gotoweek="${d}" role="button" tabindex="0">
-      <span class="dn">${dt.getDate() === 1 || d === first ? `${dt.getMonth() + 1}/` : ""}${dt.getDate()}</span>
-      ${closed ? `<span class="mi">休業日</span>` : ""}
-      ${list.slice(0, 4).map((b) => `<span class="mi ${b.kind}${b.pending ? " pending" : ""}">${toTime(b.s)} ${esc(b.label.replace(/ 様$/, ""))}</span>`).join("")}
-      ${list.length > 4 ? `<span class="mi more">ほか${list.length - 4}件</span>` : ""}</div>`;
+    const wd = dt.getDay();
+    const pend = list.filter((b) => b.pending).length;
+    return `<div class="mday${out ? " out" : ""}${d < 0 ? " past" : ""}${d === 0 ? " today" : ""}${closed ? " off" : ""}${sel === d ? " sel" : ""}${wd === 0 ? " sun" : wd === 6 ? " sat" : ""}" data-day="${d}" role="button" tabindex="0" aria-label="${md(d)} の予定を見る" aria-pressed="${sel === d}">
+      <span class="dhead"><span class="dn">${out ? `${dt.getMonth() + 1}/` : ""}${dt.getDate()}</span>${pend ? `<span class="pend" title="承認待ち・変更の希望">${pend}</span>` : ""}</span>
+      ${closed ? `<span class="mi offl">休業日</span>` : ""}
+      ${list.slice(0, 3).map((b) => `<span class="mi ${b.kind}${b.pending ? " pending" : ""}" ${b.no ? `data-open="${b.no}" role="button" tabindex="0"` : ""}><b>${toTime(b.s)}</b> ${esc(b.label.replace(/ 様$/, ""))}</span>`).join("")}
+      ${list.length > 3 ? `<span class="mi more">＋${list.length - 3}件</span>` : ""}</div>`;
   }).join("");
-  return `<div class="tbl" style="border:0"><div class="mgrid">${S.WD.map((w) => `<div class="h">${w}</div>`).join("")}${cells}</div></div>`;
+  return `<div class="tbl" style="border:0"><div class="mgrid">${S.WD.map((w, i) => `<div class="h${i === 0 ? " sun" : i === 6 ? " sat" : ""}">${w}</div>`).join("")}${cells}</div></div>`;
+}
+// 選んだ日の予定（月の表の右、週の表の下）
+const dur = (min) => `${Math.floor(min / 60) ? `${Math.floor(min / 60)}時間` : ""}${min % 60 ? `${min % 60}分` : ""}`;
+function dayPanel(items) {
+  const d = sel;
+  const closed = D().closed.find((c) => c.day === d);
+  const list = items.filter((b) => b.day === d && b.kind !== "closed").sort((a, b) => a.s - b.s || (a.pending ? 1 : -1));
+  const OPEN = S.OPEN, CLOSE = S.CLOSE, total = CLOSE - OPEN;
+  const pos = (a, b) => `left:${((Math.max(a, OPEN) - OPEN) / total) * 100}%;width:${((Math.min(b, CLOSE) - Math.max(a, OPEN)) / total) * 100}%`;
+  const solid = list.filter((b) => !b.pending);
+  const segs = solid.map((b) => `<span class="seg ${b.kind}" style="${pos(b.s, b.e)}" title="${toTime(b.s)}〜${toTime(b.e)} ${esc(b.label)}"></span>`).join("")
+    + list.filter((b) => b.pending).map((b) => `<span class="seg pending" style="${pos(b.s, b.e)}" title="${esc(b.label)}"></span>`).join("");
+  // 貸せる時間（確定したレンタル・レッスン・イベントを除いた残り）
+  const busy = solid.map((b) => [Math.max(b.s, OPEN), Math.min(b.e, CLOSE)]).filter(([a, b]) => a < b).sort((a, b) => a[0] - b[0]);
+  const free = []; let cur = OPEN;
+  busy.forEach(([a, b]) => { if (a > cur) free.push([cur, a]); cur = Math.max(cur, b); });
+  if (cur < CLOSE) free.push([cur, CLOSE]);
+  const freeText = closed ? "休業日です" : free.length ? free.map(([a, b]) => `${toTime(a)}〜${toTime(b)}（${dur(b - a)}）`).join("、") : "空きはありません";
+  const row = (b) => {
+    if (b.no) {
+      const r = S.req(b.no);
+      const c = b.pending ? r.choices.find((x) => toMin(x.start) === b.s && x.day === d) || r.choices[0] : r.choices[r.pick];
+      return `<li class="ag ${b.pending ? "pending" : "rental"}" data-open="${b.no}" role="button" tabindex="0"><span class="t">${toTime(b.s)}〜${toTime(b.e)}</span>
+        <span class="w"><span class="chip rental">レンタル</span> <b>${esc(r.name)} 様</b> ${b.pending ? `<span class="chip pending">${esc(b.label.split(" ")[0])}</span>` : chip(r.status)}<br><span class="note">${esc(r.purpose)}・${r.people}名・${yen(PRICE[c.h])}${b.pending ? `・${hoursAgo(r)}時間前に受付` : ""}</span></span></li>`;
+    }
+    const s = S.slot(b.id);
+    const n = S.booked(s.id);
+    const ppl = D().book.filter((x) => x.slot === s.id && x.status === "confirmed");
+    return `<li class="ag ${s.kind}${n >= s.cap ? " full" : ""}"><span class="t">${span(s.start, s.min)}</span>
+      <span class="w"><span class="chip ${s.kind}">${s.kind === "lesson" ? "レッスン" : "イベント"}</span> <b>${esc(s.name)}</b> ${n >= s.cap ? '<span class="chip declined">満席</span>' : `<span class="note">あと${s.cap - n}名</span>`}
+        <span class="seatbar"><span style="width:${Math.min(100, (n / s.cap) * 100)}%"></span></span>
+        <span class="note">${n}/${s.cap}名${ppl.length ? `：${ppl.map((p) => `${esc(p.name)}${p.trial ? "（初回）" : ""}`).join("、")}` : ""}</span></span></li>`;
+  };
+  return `<aside class="dayp" aria-label="${md(d)} の予定">
+    <div class="dayp-head">
+      <button class="btn icon" type="button" data-dayshift="-1" aria-label="前の日">‹</button>
+      <h2>${jd(d)}${d === 0 ? '<span class="today-tag">今日</span>' : ""}</h2>
+      <button class="btn icon" type="button" data-dayshift="1" aria-label="次の日">›</button>
+    </div>
+    ${closed ? `<p class="closed-note">休業日（${esc(closed.reason)}）</p>` : ""}
+    <div class="tl"><div class="bar">${segs}</div><div class="ticks">${[9, 12, 15, 18, 21].map((h) => `<span style="left:${((h * 60 - OPEN) / total) * 100}%">${h}</span>`).join("")}</div></div>
+    <p class="freet"><b>レンタルで貸せる時間</b>${freeText}</p>
+    ${list.length ? `<ul class="agenda">${list.map(row).join("")}</ul>` : `<p class="note" style="margin:12px 0">${closed ? "" : "この日の予定はありません。"}</p>`}
+    ${calMode === "month" ? `<div class="row" style="margin-top:12px"><button class="btn" type="button" data-gotoweek="${d}">この週を時間ごとに見る</button></div>` : ""}
+  </aside>`;
 }
 
-const dayOptions = (n, sel) => [...Array(n)].map((_, i) => `<option value="${i}" ${i === sel ? "selected" : ""}>${md(i)}</option>`).join("");
+const dayOptions = (n, picked) => [...Array(n)].map((_, i) => `<option value="${i}" ${i === picked ? "selected" : ""}>${md(i)}</option>`).join("");
 const timeOptions = (from, to, sel) => { let o = ""; for (let m = from * 60; m <= to * 60; m += 30) o += `<option ${toTime(m) === sel ? "selected" : ""}>${toTime(m)}</option>`; return o; };
 
 let slotRange = 14;
@@ -418,7 +477,7 @@ function render() {
 window.addEventListener("hashchange", () => { openNo = null; render(); });
 
 document.addEventListener("click", (e) => {
-  const t = e.target.closest("button, [data-open], [data-gotoweek], [data-slotinfo], [data-mail]");
+  const t = e.target.closest("button, [data-open], [data-day], [data-slotinfo], [data-mail]");
   if (!t) return;
   const d = t.dataset;
   const r = openNo ? S.req(openNo) : null;
@@ -499,9 +558,21 @@ document.addEventListener("click", (e) => {
     return render();
   }
   if (d.calmode) { calMode = d.calmode; return render(); }
-  if (d.week !== undefined) { weekStart = Number(d.week) === 0 ? 0 : weekStart + Number(d.week); return render(); }
-  if (d.month !== undefined) { monthStart = Number(d.month) === 0 ? 0 : monthStart + Number(d.month); return render(); }
-  if (d.gotoweek !== undefined) { weekStart = Number(d.gotoweek); calMode = "week"; return render(); }
+  if (d.week !== undefined) { weekStart = Number(d.week) === 0 ? sundayOf(0) : weekStart + Number(d.week); sel = Number(d.week) === 0 ? 0 : weekStart; return render(); }
+  if (d.mon !== undefined) {
+    mon = Number(d.mon) === 0 ? 0 : mon + Number(d.mon);
+    const { y, m } = monthOf(); sel = mon === 0 ? 0 : S.offOf(y, m, 1); // 今月なら今日、ほかの月なら1日を選ぶ
+    return render();
+  }
+  if (d.gotoweek !== undefined) { weekStart = sundayOf(Number(d.gotoweek)); sel = Number(d.gotoweek); calMode = "week"; return render(); }
+  if (d.day !== undefined) { sel = Number(d.day); return render(); }
+  if (d.dayshift !== undefined) {
+    sel += Number(d.dayshift);
+    // 選んだ日が表の外に出たら、表もいっしょに動かす
+    if (calMode === "week" && (sel < weekStart || sel > weekStart + 6)) weekStart = sundayOf(sel);
+    if (calMode === "month") { const t = S.dayOf(0), x = S.dayOf(sel); mon = (x.getFullYear() - t.getFullYear()) * 12 + x.getMonth() - t.getMonth(); }
+    return render();
+  }
   if ("icsAll" in d) {
     const evs = S.busy().filter((b) => b.kind !== "closed" && b.day >= 0).map((b) => ({ day: b.day, s: b.s, e: b.e, title: `結び家SUI ${b.label}`, uid: `${b.kind}-${b.no || b.id}-${b.day}` }));
     S.download("musubiya-sui-yoyaku.ics", S.ics(evs));
@@ -579,7 +650,7 @@ document.addEventListener("change", (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && openNo) { openNo = null; renderDetail(); }
   if (e.key === "Enter" && e.target.matches("[data-open]")) openReq(e.target.dataset.open);
-  if (e.key === "Enter" && e.target.matches("[data-gotoweek]")) { weekStart = Number(e.target.dataset.gotoweek); calMode = "week"; render(); }
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-day]")) { e.preventDefault(); e.target.click(); }
 });
 // ご予約のページ（別のタブ）でデータが変わったら描き直す
 window.addEventListener("storage", (e) => {
